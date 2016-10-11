@@ -63,6 +63,7 @@ class GestPayCryptWS
     private $vbvRisp;
     private $threeDLevel;
     private $testEnv;
+    private $requestToken;
 
     public function __construct()
     {
@@ -453,6 +454,17 @@ class GestPayCryptWS
     {
         return $this->separator;
     }
+    
+    public function setRequestToken($val)
+    {
+      $this->requestToken = urlencode(trim($val));
+      return $this;
+    }
+    
+    public function getRequestToken()
+    {
+      return urldecode($this->requestToken);
+    }
 
     public function setDecrypted($decrypted)
     {
@@ -503,7 +515,7 @@ class GestPayCryptWS
      * Genera la URL del WSDL
      * @return string
      */
-    private function getWsdl()
+    protected function getWsdl()
     {
         return 'https://' . $this->getDomainNameS2S() .
             '/gestpay/gestpayws/WSCryptDecrypt.asmx?WSDL';
@@ -513,7 +525,7 @@ class GestPayCryptWS
      * Genera l'array dei parametri per l'encrypt
      * @return array
      */
-    private function getEncParams()
+    protected function getEncParams()
     {
         // Parametri obbligatori
         $params = array(
@@ -530,7 +542,7 @@ class GestPayCryptWS
      * Genera l'array dei parametri per il decrypt
      * @return array
      */
-    private function getDecParams()
+    protected function getDecParams()
     {
         // Parametri obbligatori
         $params = array(
@@ -546,7 +558,7 @@ class GestPayCryptWS
      * @todo Gestire parametri opzionali
      * @return array
      */
-    private function getOptParams()
+    protected function getOptParams()
     {
         $params = array();
 
@@ -562,6 +574,10 @@ class GestPayCryptWS
         }
         if (isset($this->customInfo)) {
             $params['customInfo'] = $this->getCustomInfo();
+        }
+        if(isset($this->requestToken))
+        {
+          $params['requestToken'] = $this->getRequestToken();
         }
         return $params;
     }
